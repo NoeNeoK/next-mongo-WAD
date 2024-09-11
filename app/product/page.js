@@ -4,24 +4,25 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+  const APIBASE = process.env.NEXT_PUBLIC_API_URL;
   const { register, handleSubmit } = useForm();
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState([]);
 
   async function fetchProducs() {
-    const data = await fetch("http://localhost:3000/api/product");
+    const data = await fetch(`${APIBASE}/product`);
     const p = await data.json();
     setProducts(p);
   }
 
   async function fetchCategory() {
-    const data = await fetch("http://localhost:3000/api/category");
+    const data = await fetch(`${APIBASE}/category`);
     const c = await data.json();
     setCategory(c);
   }
 
   const createProduct = (data) => {
-    fetch("http://localhost:3000/api/product", {
+    fetch(`${APIBASE}/product`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +84,9 @@ export default function Home() {
                 className="border border-black w-full"
               >
                 {category.map((c) => (
-                  <option key={c._id} value={c._id}>{c.name}</option>
+                  <option key={c._id} value={c._id}>
+                    {c.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -100,15 +103,14 @@ export default function Home() {
       <div className="border m-4 bg-slate-300 flex-1 w-64">
         <h1 className="text-2xl">Products ({products.length})</h1>
         <ul class="list-disc ml-8">
-          {
-            products.map((p) => (
-              <li key={p._id}>
-                <Link href={`/product/${p._id}`} className="font-bold">
-                  {p.name}
-                </Link>{" "}
-                - {p.description}
-              </li>
-            ))}
+          {products.map((p) => (
+            <li key={p._id}>
+              <Link href={`/product/${p._id}`} className="font-bold">
+                {p.name}
+              </Link>{" "}
+              - {p.description}
+            </li>
+          ))}
         </ul>
       </div>
     </div>
